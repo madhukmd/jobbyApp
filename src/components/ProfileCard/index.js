@@ -33,16 +33,61 @@ class ProfileCard extends Component {
       method: 'GET',
     }
     const response = await fetch(apiUrl, options)
-    const data = await response.json()
-    console.log(data)
+    if (response.ok === true) {
+      const data = await response.json()
+      const profileDetails = {
+        name: data.profile_details.name,
+        profileImageUrl: data.profile_details.profile_image_url,
+        shortBio: data.profile_details.short_bio,
+      }
+      this.setState({apiStatus: apiStatusConstants.success, profileDetails})
+    } else {
+      this.setState({apiStatus: apiStatusConstants.failure})
+    }
   }
 
-  render() {
+  renderProfileDetailsView = () => {
+    const {profileDetails} = this.state
+    const {name, profileImageUrl, shortBio} = profileDetails
     return (
-      <div>
-        <h1>Pro</h1>
+      <div className="profile-container">
+        <img src={profileImageUrl} alt="profile" className="profile-img" />
+        <h1 className="profile-name">{name}</h1>
+        <p className="profile-bio">{shortBio}</p>
       </div>
     )
+  }
+
+  renderProfileDetailsFailureView = () => (
+    <div className="profile-failure-container">
+      <button
+        type="button"
+        className="profile-failure-button"
+        onClick={this.getProfileCard}
+      >
+        Retry
+      </button>
+    </div>
+  )
+
+  renderProfileInProgressView = () => (
+    <div className="profile-loader-container" data-testid="loader">
+      <Loader type="ThreeDots" color="#ffffff" height="50" width="50" />
+    </div>
+  )
+
+  render() {
+    const {apiStatus} = this.state
+    switch (apiStatus) {
+      case apiStatusConstants.success:
+        return this.renderProfileDetailsView()
+      case apiStatusConstants.failure:
+        return this.renderProfileDetailsFailureView()
+      case apiStatusConstants.inProgress:
+        return this.renderProfileInProgressView()
+      default:
+        return null
+    }
   }
 }
 export default ProfileCard

@@ -1,49 +1,51 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
 import Loader from 'react-loader-spinner'
+import {BsSearch} from 'react-icons/bs'
 
 import Header from '../Header'
 import FiltersGroup from '../FiltersGroup'
+import JobCard from '../JobCard'
 
 import './index.css'
 
-// const employmentTypesList = [
-//   {
-//     label: 'Full Time',
-//     employmentTypeId: 'FULLTIME',
-//   },
-//   {
-//     label: 'Part Time',
-//     employmentTypeId: 'PARTTIME',
-//   },
-//   {
-//     label: 'Freelance',
-//     employmentTypeId: 'FREELANCE',
-//   },
-//   {
-//     label: 'Internship',
-//     employmentTypeId: 'INTERNSHIP',
-//   },
-// ]
+const employmentTypesList = [
+  {
+    label: 'Full Time',
+    employmentTypeId: 'FULLTIME',
+  },
+  {
+    label: 'Part Time',
+    employmentTypeId: 'PARTTIME',
+  },
+  {
+    label: 'Freelance',
+    employmentTypeId: 'FREELANCE',
+  },
+  {
+    label: 'Internship',
+    employmentTypeId: 'INTERNSHIP',
+  },
+]
 
-// const salaryRangesList = [
-//   {
-//     salaryRangeId: '1000000',
-//     label: '10 LPA and above',
-//   },
-//   {
-//     salaryRangeId: '2000000',
-//     label: '20 LPA and above',
-//   },
-//   {
-//     salaryRangeId: '3000000',
-//     label: '30 LPA and above',
-//   },
-//   {
-//     salaryRangeId: '4000000',
-//     label: '40 LPA and above',
-//   },
-// ]
+const salaryRangesList = [
+  {
+    salaryRangeId: '1000000',
+    label: '10 LPA and above',
+  },
+  {
+    salaryRangeId: '2000000',
+    label: '20 LPA and above',
+  },
+  {
+    salaryRangeId: '3000000',
+    label: '30 LPA and above',
+  },
+  {
+    salaryRangeId: '4000000',
+    label: '40 LPA and above',
+  },
+]
 
 const apiStatusConstants = {
   initial: 'INITIAL',
@@ -97,11 +99,73 @@ class Jobs extends Component {
     }
   }
 
-  inProgressView = () => (
+  renderTnProgress = () => (
     <div className="loader-container" data-testid="loader">
       <Loader type="ThreeDots" color="#ffffff" height="50" width="50" />
     </div>
   )
+
+  renderJobsList = () => {
+    const {jobsList} = this.state
+    const jobsView = jobsList.length !== 0
+    return jobsView ? (
+      <div className="all-job-cards-container">
+        <ul className="jobs-listItems-container">
+          {jobsList.map(eachJob => (
+            <JobCard jobcard={eachJob} key={eachJob.id} />
+          ))}
+        </ul>
+      </div>
+    ) : (
+      <div className="noJobs-view">
+        <img
+          src="https://assets.ccbp.in/frontend/react-js/no-jobs-img.png"
+          className="noJobs-img"
+          alt="no jobs"
+        />
+        <h1 className="noJobs-heading">No Jobs Found</h1>
+        <p className="noJobs-description">
+          We could not find any jobs. Try other filters.
+        </p>
+      </div>
+    )
+  }
+
+  renderFailureView = () => (
+    <div className="jobs-errorView-container">
+      <img
+        src="https://assets.ccbp.in/frontend/react-js/failure-img.png"
+        alt="failure view"
+        className="jobs-failure-img"
+      />
+      <h1 className="jobs-failure-heading">Oops! Something Went Wrong</h1>
+      <p className="jobs-failure-description">
+        We cannot seem to find the page you are looking for
+      </p>
+      <button
+        type="button"
+        className="jobs-failure-button"
+        onClick={this.getJobs}
+      >
+        Retry
+      </button>
+    </div>
+  )
+
+  renderAllViews = () => {
+    const {apiStatus} = this.state
+    switch (apiStatus) {
+      case apiStatusConstants.success:
+        return this.renderJobsList()
+      case apiStatusConstants.failure:
+        return this.renderFailureView()
+      case apiStatusConstants.inProgress:
+        return this.renderTnProgress()
+
+      default:
+        return null
+    }
+  }
 
   render() {
     return (
@@ -109,7 +173,27 @@ class Jobs extends Component {
         <Header />
         <div className="jobs-container">
           <div className="jobs-content-container">
-            <FiltersGroup />
+            <FiltersGroup
+              employmentTypesList={employmentTypesList}
+              salaryRangesList={salaryRangesList}
+            />
+            <div className="jobs-list-container">
+              <div className="jobs-search-input-container">
+                <input
+                  type="search"
+                  placeholder="Search"
+                  className="jobs-search-input"
+                />
+                <button
+                  type="button"
+                  data-testid="searchButton"
+                  className="jobs-search-button"
+                >
+                  <BsSearch className="jobs-search-icon" />
+                </button>
+              </div>
+              {this.renderAllViews()}
+            </div>
           </div>
         </div>
       </>
