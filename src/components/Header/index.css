@@ -27,6 +27,7 @@
 
 .website-logo {
   width: 150px;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 567px) {
@@ -43,7 +44,10 @@
   color: #ffffff;
   letter-spacing: 1.2px;
 }
-
+.home-jobs-link {
+  text-decoration: none;
+  color: #ffffff;
+}
 .logout {
   font-family: 'Roboto';
   font-weight: 500;

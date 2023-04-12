@@ -2,6 +2,7 @@ import {Component} from 'react'
 import Cookies from 'js-cookie'
 import Loader from 'react-loader-spinner'
 import {BsSearch} from 'react-icons/bs'
+import {AiOutlineArrowUp} from 'react-icons/ai'
 
 import Header from '../Header'
 import FiltersGroup from '../FiltersGroup'
@@ -58,6 +59,7 @@ class Jobs extends Component {
   state = {
     jobsList: [],
     apiStatus: apiStatusConstants.initial,
+    scrolldown: false,
   }
 
   componentDidMount() {
@@ -92,7 +94,7 @@ class Jobs extends Component {
         jobsList: updatedJobsList,
         apiStatus: apiStatusConstants.success,
       })
-      const {jobsList} = this.state
+      //   const {jobsList} = this.state
       //   console.log(jobsList)
     } else {
       this.setState({apiStatus: apiStatusConstants.failure})
@@ -100,7 +102,7 @@ class Jobs extends Component {
   }
 
   renderTnProgress = () => (
-    <div className="loader-container" data-testid="loader">
+    <div className="job-loader-container" data-testid="loader">
       <Loader type="ThreeDots" color="#ffffff" height="50" width="50" />
     </div>
   )
@@ -152,7 +154,23 @@ class Jobs extends Component {
     </div>
   )
 
+  status = () => {
+    if (document.documentElement.scrollTop > 300) {
+      this.setState({scrolldown: true})
+    } else {
+      this.setState({scrolldown: false})
+    }
+  }
+
+  scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }
+
   renderAllViews = () => {
+    window.onscroll = this.status
     const {apiStatus} = this.state
     switch (apiStatus) {
       case apiStatusConstants.success:
@@ -168,6 +186,8 @@ class Jobs extends Component {
   }
 
   render() {
+    const {scrolldown} = this.state
+    const status = scrolldown ? 'flex' : 'none'
     return (
       <>
         <Header />
@@ -193,6 +213,14 @@ class Jobs extends Component {
                 </button>
               </div>
               {this.renderAllViews()}
+              <button
+                type="button"
+                className={`goTop ${status}`}
+                onClick={this.scrollToTop}
+              >
+                <AiOutlineArrowUp className="top-icon" />
+                go Top
+              </button>
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ import './index.css'
 const FiltersGroup = props => {
   const renderInputSearch = () => {
     const t = true
+    console.log(t)
     return (
       <div className="search-input-container">
         <input type="search" placeholder="Search" className="search-input" />

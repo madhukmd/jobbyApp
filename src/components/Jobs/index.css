@@ -137,7 +137,7 @@
   font-size: 14px;
   text-align: center;
 }
-.failure-button {
+.jobs-failure-button {
   font-family: 'Roboto';
   font-size: 14px;
   font-weight: 500;
@@ -148,4 +148,33 @@
   outline: none;
   cursor: pointer;
   background-color: #4f46e5;
+}
+.goTop {
+  position: fixed;
+  bottom: 20px;
+  color: #ffffff;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 7px;
+  background-color: #475569;
+  padding: 10px 20px;
+}
+.flex {
+  display: flex;
+  align-items: center;
+}
+.none {
+  display: none;
+}
+.top-icon {
+  font-size: 14px;
+  margin-right: 5px;
+  color: yellow;
+}
+.job-loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }

@@ -1,8 +1,13 @@
 import {Component} from 'react'
-
+import Loader from 'react-loader-spinner'
 import Cookies from 'js-cookie'
+import {BsFillBriefcaseFill, BsStarFill} from 'react-icons/bs'
+import {BiLinkExternal} from 'react-icons/bi'
+import {MdLocationOn} from 'react-icons/md'
 
 import Header from '../Header'
+import SkillsCard from '../SkillsCard'
+import SimilarJobItem from '../SimilarJobItem'
 
 import './index.css'
 
@@ -99,11 +104,101 @@ class JobItemDetails extends Component {
     const {description, imageUrl} = lifeAtCompany
 
     return (
-      <div>
-        <h1>ok</h1>
+      <div className="jobs-detail-container ">
+        <div className="jobs-detail-content-container">
+          <div className="job-card-detail-item-container">
+            <div className="logo-title-container">
+              <img
+                src={companyLogoUrl}
+                alt="company logo"
+                className="company-logo"
+              />
+              <div className="title-rating-container">
+                <h1 className="title-heading">{title}</h1>
+                <div className="rating-container">
+                  <BsStarFill className="rating-icon" />
+                  <p className="rating-heading">{rating}</p>
+                </div>
+              </div>
+            </div>
+            <div className="location-package-container">
+              <div className="location-employee-container">
+                <div className="location-container">
+                  <MdLocationOn className="location-icon" />
+                  <p className="location-heading">{location}</p>
+                </div>
+                <div className="employee-type-container">
+                  <BsFillBriefcaseFill className="briefcase-icon" />
+                  <p className="employee-type-heading">{employmentType}</p>
+                </div>
+              </div>
+              <p className="package">{packagePerAnnum}</p>
+            </div>
+            <hr className="line" />
+            <div className="link-container">
+              <h1 className="description-heading">Description</h1>
+              <div className="visit-container">
+                <a href={companyWebsiteUrl} className="visit-heading">
+                  Visit
+                </a>
+                <BiLinkExternal className="visit-icon" />
+              </div>
+            </div>
+            <p className="description">{jobDescription}</p>
+            <h1 className="skill-heading">Skills</h1>
+            <ul className="skills-list-container">
+              {skills.map(eachItem => (
+                <SkillsCard skill={eachItem} key={eachItem.name} />
+              ))}
+            </ul>
+            <h1 className="life-at-company-heading">Life at Company</h1>
+            <div className="life-at-company-container">
+              <p className="life-at-company-description">{description}</p>
+              <img
+                src={imageUrl}
+                alt="life at company"
+                className="life-at-company-image"
+              />
+            </div>
+          </div>
+          <h1 className="similar-jobs-heading">Similar Jobs</h1>
+          <ul className="similar-jobs-list">
+            {similarJobData.map(eachItem => (
+              <SimilarJobItem similarJob={eachItem} key={eachItem.id} />
+            ))}
+          </ul>
+        </div>
       </div>
     )
   }
+
+  renderFailureView = () => (
+    <div className="job-item-failure-view-container">
+      <img
+        src="https://assets.ccbp.in/frontend/react-js/failure-img.png"
+        alt="failure view"
+        className="job-item-failure-img"
+      />
+      <h1 className="job-item-failure-heading">Oops! Something Went Wrong</h1>
+      <p className="job-item-failure-description">
+        We cannot seem to find the page you are looking for
+      </p>
+      <button
+        type="button"
+        data-testid="button"
+        className="job-item-failure-button"
+        onClick={this.getJobDetails}
+      >
+        Retry
+      </button>
+    </div>
+  )
+
+  renderLoadingView = () => (
+    <div className="job-failure-loader-container" data-testid="loader">
+      <Loader type="ThreeDots" color="#ffffff" height="50" width="50" />
+    </div>
+  )
 
   renderAllViews = () => {
     const {apiStatus} = this.state
