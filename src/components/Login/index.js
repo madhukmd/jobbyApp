@@ -22,8 +22,10 @@ class Login extends Component {
   }
 
   onSubmitSuccess = jwtToken => {
-    Cookies.set('jwt_token', jwtToken, {expires: 30})
     const {history} = this.props
+    Cookies.set('jwt_token', jwtToken, {
+      expires: 30,
+    })
     history.replace('/')
   }
 
@@ -41,9 +43,10 @@ class Login extends Component {
       body: JSON.stringify(userDetails),
     }
     const response = await fetch(url, options)
-    const data = response.json()
+    const data = await response.json()
     if (response.ok === true) {
       this.onSubmitSuccess(data.jwt_token)
+      console.log(data.jwt_token)
     } else {
       this.onSubmitFailure(data.error_msg)
     }
@@ -62,6 +65,7 @@ class Login extends Component {
           value={username}
           onChange={this.onChangeUsername}
           className="username-password-field"
+          placeholder="Username"
         />
       </div>
     )
@@ -75,11 +79,12 @@ class Login extends Component {
           PASSWORD
         </label>
         <input
-          type="text"
+          type="password"
           id="password"
           value={password}
           onChange={this.onChangePassword}
           className="username-password-field"
+          placeholder="Password"
         />
       </div>
     )

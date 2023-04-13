@@ -8,6 +8,7 @@ import {FiLogOut} from 'react-icons/fi'
 import './index.css'
 
 const websiteLogo = 'https://assets.ccbp.in/frontend/react-js/logo-img.png'
+
 const Header = props => {
   const Logout = () => {
     const {history} = props
@@ -51,7 +52,13 @@ const Header = props => {
         </div>
 
         <div className="desktop-header-view">
-          <img src={websiteLogo} alt="website logo" className="website-logo" />
+          <Link to="/">
+            <img
+              src={websiteLogo}
+              alt="website logo"
+              className="website-logo"
+            />
+          </Link>
           <ul className="nav-menu">
             <li className="nav-heading">
               <Link to="/" className="home-jobs-link">

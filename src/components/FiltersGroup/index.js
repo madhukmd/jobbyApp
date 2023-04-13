@@ -5,15 +5,31 @@ import './index.css'
 
 const FiltersGroup = props => {
   const renderInputSearch = () => {
-    const t = true
-    console.log(t)
+    const mobileSearch = event => {
+      const {onSearchChange} = props
+      onSearchChange(event)
+    }
+
+    const mobileEnter = event => {
+      const {onEnterSearch} = props
+      onEnterSearch(event)
+    }
+    const {getJobs} = props
+
     return (
       <div className="search-input-container">
-        <input type="search" placeholder="Search" className="search-input" />
+        <input
+          type="search"
+          placeholder="Search"
+          className="search-input"
+          onChange={mobileSearch}
+          onKeyDown={mobileEnter}
+        />
         <button
           type="button"
           data-testid="searchButton"
           className="search-button"
+          onClick={getJobs}
         >
           <BsSearch className="search-icon" />
         </button>
@@ -27,21 +43,31 @@ const FiltersGroup = props => {
       <div className="employment-container">
         <h1 className="employment-heading"> Type of Employment</h1>
         <ul className="employment-list">
-          {employmentTypesList.map(eachType => (
-            <li className="employ-list-item" key={eachType.employmentTypeId}>
-              <input
-                type="checkbox"
-                id={eachType.employmentTypeId}
-                value={eachType.employmentTypeId}
-              />
-              <label
-                htmlFor={eachType.employmentTypeId}
-                className="employ-label-heading"
+          {employmentTypesList.map(eachType => {
+            const {changeEmployeeOptions} = props
+            const changeEmp = event => {
+              changeEmployeeOptions(event.target.value)
+            }
+            return (
+              <li
+                className="employ-list-item"
+                key={eachType.employmentTypeId}
+                onChange={changeEmp}
               >
-                {eachType.label}
-              </label>
-            </li>
-          ))}
+                <input
+                  type="checkbox"
+                  id={eachType.employmentTypeId}
+                  value={eachType.employmentTypeId}
+                />
+                <label
+                  htmlFor={eachType.employmentTypeId}
+                  className="employ-label-heading"
+                >
+                  {eachType.label}
+                </label>
+              </li>
+            )
+          })}
         </ul>
       </div>
     )
@@ -53,21 +79,32 @@ const FiltersGroup = props => {
       <div className="salary-container">
         <h1 className="salary-heading">Salary Range</h1>
         <ul className="salary-list">
-          {salaryRangesList.map(eachSalary => (
-            <li className="salary-list-item" key={eachSalary.salaryRangeId}>
-              <input
-                type="radio"
-                id={eachSalary.salaryRangeId}
-                value={eachSalary.salaryRangeId}
-              />
-              <label
-                htmlFor={eachSalary.salaryRangeId}
-                className="salary-label-heading"
+          {salaryRangesList.map(eachSalary => {
+            const {changeSalary} = props
+            const onChangeSalary = () => {
+              changeSalary(eachSalary.salaryRangeId)
+            }
+            return (
+              <li
+                className="salary-list-item"
+                key={eachSalary.salaryRangeId}
+                onClick={onChangeSalary}
               >
-                {eachSalary.label}
-              </label>
-            </li>
-          ))}
+                <input
+                  type="radio"
+                  id={eachSalary.salaryRangeId}
+                  value={eachSalary.salaryRangeId}
+                  name="salary"
+                />
+                <label
+                  htmlFor={eachSalary.salaryRangeId}
+                  className="salary-label-heading"
+                >
+                  {eachSalary.label}
+                </label>
+              </li>
+            )
+          })}
         </ul>
       </div>
     )

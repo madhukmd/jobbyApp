@@ -74,12 +74,15 @@
     height: 40px;
   }
 }
+::placeholder {
+  color: red;
+}
 
 .login-button {
   border: none;
   outline: none;
   cursor: pointer;
-  background-color: #6366f1;
+  background-color: #4f46e5;
   color: #ffffff;
   font-family: 'Roboto';
   font-weight: 600;

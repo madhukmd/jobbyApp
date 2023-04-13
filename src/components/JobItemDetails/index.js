@@ -30,7 +30,7 @@ class JobItemDetails extends Component {
   }
 
   getJobDetails = async () => {
-    // this.setState({apiStatus: apiStatusConstants.inProgress})
+    this.setState({apiStatus: apiStatusConstants.inProgress})
     const {match} = this.props
     const {params} = match
     const {id} = params
@@ -110,7 +110,7 @@ class JobItemDetails extends Component {
             <div className="logo-title-container">
               <img
                 src={companyLogoUrl}
-                alt="company logo"
+                alt="job details company logo"
                 className="company-logo"
               />
               <div className="title-rating-container">

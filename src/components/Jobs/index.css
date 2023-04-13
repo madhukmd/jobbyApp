@@ -46,6 +46,12 @@
   border-radius: 3px;
 }
 
+@media screen and (max-width: 768px) {
+  .jobs-search-input-container {
+    display: none;
+  }
+}
+
 @media screen and (min-width: 768px) {
   .jobs-search-input-container {
     width: 70%;
@@ -160,6 +166,14 @@
   background-color: #475569;
   padding: 10px 20px;
 }
+@media screen and (max-width: 768px) {
+  .goTop {
+    bottom: 0;
+    margin-left: 50%;
+    transform: translate(-70%, -50%);
+  }
+}
+
 .flex {
   display: flex;
   align-items: center;

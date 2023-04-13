@@ -59,6 +59,9 @@ class Jobs extends Component {
   state = {
     jobsList: [],
     apiStatus: apiStatusConstants.initial,
+    employeeType: [],
+    minSalary: 0,
+    searchInput: '',
     scrolldown: false,
   }
 
@@ -66,9 +69,15 @@ class Jobs extends Component {
     this.getJobs()
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.status)
+  }
+
   getJobs = async () => {
     this.setState({apiStatus: apiStatusConstants.inProgress})
-    const apiUrl = 'https://apis.ccbp.in/jobs'
+    const {searchInput, minSalary, employeeType} = this.state
+    const apiUrl = `https://apis.ccbp.in/jobs?employment_type=${employeeType.join()}&minimum_package=${minSalary}&search=${searchInput}`
+
     const token = Cookies.get('jwt_token')
 
     const options = {
@@ -80,6 +89,7 @@ class Jobs extends Component {
     const response = await fetch(apiUrl, options)
     if (response.ok === true) {
       const data = await response.json()
+      //   console.log(data)
       const updatedJobsList = data.jobs.map(eachJobItem => ({
         companyLogoUrl: eachJobItem.company_logo_url,
         employmentType: eachJobItem.employment_type,
@@ -109,7 +119,7 @@ class Jobs extends Component {
 
   renderJobsList = () => {
     const {jobsList} = this.state
-    const jobsView = jobsList.length !== 0
+    const jobsView = jobsList.length > 0
     return jobsView ? (
       <div className="all-job-cards-container">
         <ul className="jobs-listItems-container">
@@ -169,8 +179,28 @@ class Jobs extends Component {
     })
   }
 
+  onSearchChange = event => {
+    this.setState({searchInput: event.target.value})
+  }
+
+  onEnterSearch = event => {
+    if (event.key === 'Enter') {
+      this.getJobs()
+    }
+  }
+
+  changeSalary = salary => {
+    this.setState({minSalary: salary}, this.getJobs)
+  }
+
+  changeEmployeeOptions = type => {
+    this.setState(
+      prev => ({employeeType: [...prev.employeeType, type]}),
+      this.getJobs,
+    )
+  }
+
   renderAllViews = () => {
-    window.onscroll = this.status
     const {apiStatus} = this.state
     switch (apiStatus) {
       case apiStatusConstants.success:
@@ -179,15 +209,15 @@ class Jobs extends Component {
         return this.renderFailureView()
       case apiStatusConstants.inProgress:
         return this.renderTnProgress()
-
       default:
         return null
     }
   }
 
   render() {
+    window.addEventListener('scroll', this.status)
     const {scrolldown} = this.state
-    const status = scrolldown ? 'flex' : 'none'
+    const css = scrolldown ? 'flex' : 'none'
     return (
       <>
         <Header />
@@ -196,6 +226,11 @@ class Jobs extends Component {
             <FiltersGroup
               employmentTypesList={employmentTypesList}
               salaryRangesList={salaryRangesList}
+              onSearchChange={this.onSearchChange}
+              onEnterSearch={this.onEnterSearch}
+              getJobs={this.getJobs}
+              changeSalary={this.changeSalary}
+              changeEmployeeOptions={this.changeEmployeeOptions}
             />
             <div className="jobs-list-container">
               <div className="jobs-search-input-container">
@@ -203,11 +238,14 @@ class Jobs extends Component {
                   type="search"
                   placeholder="Search"
                   className="jobs-search-input"
+                  onChange={this.onSearchChange}
+                  onKeyDown={this.onEnterSearch}
                 />
                 <button
                   type="button"
                   data-testid="searchButton"
                   className="jobs-search-button"
+                  onClick={this.getJobs}
                 >
                   <BsSearch className="jobs-search-icon" />
                 </button>
@@ -215,7 +253,7 @@ class Jobs extends Component {
               {this.renderAllViews()}
               <button
                 type="button"
-                className={`goTop ${status}`}
+                className={`goTop ${css}`}
                 onClick={this.scrollToTop}
               >
                 <AiOutlineArrowUp className="top-icon" />
